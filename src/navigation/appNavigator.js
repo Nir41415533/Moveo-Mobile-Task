@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,20 +10,38 @@ import { auth } from '../services/FireBaseConfig';
 
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
-import MainScreen from '../screens/MainScreen'; 
+import ListScreen from '../screens/ListScreen';
+import MapScreen from '../screens/MapScreen';
 import NoteDetailScreen from '../screens/NoteDetailScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
-// MainTabs is the bottom tab navigator
 const MainTabs = () => {
     return (
-        <Tab.Navigator screenOptions={{ headerShown: false }}>
-            {/* בעתיד נפריד את זה לשני קבצים שונים: List ו-Map */}
-            <Tab.Screen name="List" component={MainScreen} options={{ title: 'רשימה' }} />
-            <Tab.Screen name="Map" component={MainScreen} options={{ title: 'מפה' }} />
+        <Tab.Navigator
+            screenOptions={{
+                headerShown: false,
+                tabBarActiveTintColor: '#f9b17a',
+                tabBarInactiveTintColor: '#67719d',
+            }}
+        >
+            <Tab.Screen
+                name="List"
+                component={ListScreen}
+                options={{
+                    title: 'List',
+                    tabBarIcon: ({ color, size }) => <Ionicons name="list" size={size} color={color} />,
+                }}
+            />
+            <Tab.Screen
+                name="Map"
+                component={MapScreen}
+                options={{
+                    title: 'Map',
+                    tabBarIcon: ({ color, size }) => <Ionicons name="map" size={size} color={color} />,
+                }}
+            />
         </Tab.Navigator>
     );
 };
@@ -31,12 +50,24 @@ const AppNavigator = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => { //this is to check if the user is logged in or not
+    useEffect(() => {
+        let cancelled = false;
         const unsubscribe = onAuthStateChanged(auth, (authenticatedUser) => {
-            setUser(authenticatedUser);
-            setLoading(false);
+            if (!cancelled) {
+                setUser(authenticatedUser);
+                setLoading(false);
+            }
+        }, (err) => {
+            if (!cancelled) setLoading(false);
         });
-        return () => unsubscribe(); //cleanup, firebase stops listening to the user when the component unmounts
+        const timeout = setTimeout(() => {
+            if (!cancelled) setLoading(false);
+        }, 8000);
+        return () => {
+            cancelled = true;
+            clearTimeout(timeout);
+            unsubscribe();
+        };
     }, []);
 
     if (loading) {
@@ -53,10 +84,15 @@ const AppNavigator = () => {
                 <>
                     <Stack.Screen name="AppHome" component={MainTabs} />
                     {/* NoteDetail חייב להיות ב-Stack כדי שנוכל לעבור אליו מכל טאב */}
-                    <Stack.Screen 
-                        name="NoteDetail" 
-                        component={NoteDetailScreen} 
-                        options={{ headerShown: true, title: 'new note' }} 
+                    <Stack.Screen
+                        name="NoteDetail"
+                        component={NoteDetailScreen}
+                        options={({ route }) => ({
+                            headerShown: true,
+                            title: route.params?.noteId ? 'Edit Note' : 'New Note',
+                            headerStyle: { backgroundColor: '#424769' },
+                            headerTintColor: '#ffffff',
+                        })}
                     />
                 </>
             ) : (

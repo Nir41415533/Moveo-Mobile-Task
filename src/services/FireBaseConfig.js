@@ -2,16 +2,17 @@ import { initializeApp } from "firebase/app";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
 
-//firebase config
+const extra = Constants.expoConfig?.extra ?? {};
 const firebaseConfig = {
-  apiKey: "AIzaSyBPsjf25PD9xTfpNzWU7n17k5IfLKC5-tk",
-  authDomain: "mooveo-assigment.firebaseapp.com",
-  projectId: "mooveo-assigment",
-  storageBucket: "mooveo-assigment.firebasestorage.app",
-  messagingSenderId: "356736048973",
-  appId: "1:356736048973:web:4c629b04aa9b81b41de104",
-  measurementId: "G-P6JPEKW04D"
+  apiKey: extra.firebaseApiKey,
+  authDomain: extra.firebaseAuthDomain,
+  projectId: extra.firebaseProjectId,
+  storageBucket: extra.firebaseStorageBucket,
+  messagingSenderId: extra.firebaseMessagingSenderId,
+  appId: extra.firebaseAppId,
+  measurementId: extra.firebaseMeasurementId,
 };
 
 const app = initializeApp(firebaseConfig);

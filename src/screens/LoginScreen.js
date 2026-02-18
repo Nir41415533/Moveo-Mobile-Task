@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, Platform, Keyboard, ActivityIndicator } from 'react-native';
+
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../services/FireBaseConfig';
+
 import { COLORS } from '../constants/colors';
 
 const LoginScreen = ({ navigation }) => {
@@ -13,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
     const handleLogin = async () => {
         setError(''); 
         
-        if (email === '' || password === '') {
+        if (email.trim() === '' || password.trim() === '') {
             setError('Please fill in all fields');
             return;
         }
@@ -24,55 +26,63 @@ const LoginScreen = ({ navigation }) => {
             await signInWithEmailAndPassword(auth, email.trim(), password);
         } catch (err) {
             //translate firebase errors to user friendly errors
-            if (err.code === 'auth/user-not-found') setError('User not found');
-            else if (err.code === 'auth/wrong-password') setError('Incorrect password');
-            else setError('Login failed. Please try again.');
+            if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+                setError('Invalid email or password.');
+            } else if (err.code === 'auth/invalid-email') {
+                setError('Please enter a valid email address.');
+            } else {
+                setError('Login failed. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Welcome Back</Text>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+                <View style={styles.container}>
+                    <Text style={styles.title}>User Login</Text>
 
-            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+                    {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-            <TextInput
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                placeholderTextColor={COLORS.lightBlue}
-                style={styles.input}
-                autoCapitalize="none"
-                keyboardType="email-address"
-            />
+                    <TextInput
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                        placeholderTextColor={COLORS.lightBlue}
+                        style={styles.input}
+                        autoCapitalize="none"
+                        keyboardType="email-address"
+                    />
 
-            <TextInput
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                placeholderTextColor={COLORS.lightBlue}
-                style={styles.input}
-                secureTextEntry
-            />
+                    <TextInput
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        placeholderTextColor={COLORS.lightBlue}
+                        style={styles.input}
+                        secureTextEntry
+                    />
 
-            <TouchableOpacity 
-                style={styles.button} 
-                onPress={handleLogin}
-                disabled={loading}
-            >
-                {loading ? (
-                    <ActivityIndicator color={COLORS.darkBlue} />
-                ) : (
-                    <Text style={styles.buttonText}>Login</Text>
-                )}
-            </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleLogin}
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <ActivityIndicator color={COLORS.darkBlue} />
+                        ) : (
+                            <Text style={styles.buttonText}>Login</Text>
+                        )}
+                    </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
-            </TouchableOpacity>
-        </View>
+                    <TouchableOpacity onPress={() => navigation.replace('SignUp')}>
+                        <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 };
 

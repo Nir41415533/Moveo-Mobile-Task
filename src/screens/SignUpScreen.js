@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { COLORS } from '../constants/colors';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, Platform, Keyboard, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
+
+import { COLORS } from '../constants/colors';
 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../services/FireBaseConfig';
@@ -11,38 +12,48 @@ const SignUpScreen = ({navigation}) => {
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
     const [error,setError]=useState('')
+    const [loading,setLoading]=useState(false);
 
     
     const handleSignUp=async()=>{
         setError(''); // clear the error message
-        if(email==='' || password===''){
-            setError('Error: Please fill in all fields');
+        if (!email.trim() || !password.trim()) {
+            setError('Please fill in all fields');
             return;
         }
-        try{
-            await createUserWithEmailAndPassword(auth,email.trim(),password); //trim to white spaces and no need navitigation here 
-            console.log('User created successfully');
-        }
-        catch(error){
-            setError('Error: '+error.message);
+        setLoading(true);
+
+        try {
+            await createUserWithEmailAndPassword(auth, email.trim(), password);
+        } catch (err) {
+            if (err.code === 'auth/email-already-in-use') setError('This email is already registered.');
+            else if (err.code === 'auth/invalid-email') setError('Please enter a valid email address.');
+            else if (err.code === 'auth/weak-password') setError('Password must be at least 6 characters.');
+            else setError('Sign up failed. Please try again.');
+        } finally {
+            setLoading(false);
         }
 
     };
   
     return (
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <KeyboardAvoidingView behavior= {Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>        
+
         <View style={styles.container}>
-            <Text style={styles.title}> Create an account</Text>
+            <Text style={styles.title}>Create an account</Text>
 
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
             <TextInput
-                placeholder='Email'
+                placeholder="Email"
                 value={email}
                 placeholderTextColor={COLORS.lightBlue}
                 onChangeText={setEmail}
-                autoCapitalize='none'
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
                 style={styles.input}
-                
             />
             <TextInput
                 placeholder='Password'
@@ -53,8 +64,12 @@ const SignUpScreen = ({navigation}) => {
                 secureTextEntry //this is to hide the password
             />
 
-            <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                <Text style={styles.buttonText}> Sign Up</Text>
+            <TouchableOpacity style={styles.button} onPress={handleSignUp} disabled={loading}>
+                {loading ? (
+                    <ActivityIndicator color={COLORS.darkBlue} />
+                ) : (
+                    <Text style={styles.buttonText}>Sign Up</Text>
+                )}
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -64,6 +79,9 @@ const SignUpScreen = ({navigation}) => {
 
 
         </View>
+        </KeyboardAvoidingView>
+
+        </TouchableWithoutFeedback>
     )
 }
 
@@ -93,7 +111,9 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 10,
+    height: 55,
   },
   buttonText: {
     color: COLORS.darkBlue,
