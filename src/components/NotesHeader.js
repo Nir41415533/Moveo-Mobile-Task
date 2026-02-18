@@ -1,30 +1,36 @@
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants/colors';
 
-const NotesHeader = ({ userEmail, onLogout }) => (
-  <View style={styles.header}>
-    <View style={styles.accentLine} />
-    <View style={styles.content}>
-      <View style={styles.avatarCircle}>
-        <Ionicons name="person" size={20} color={COLORS.accent} />
+const NotesHeader = ({ userEmail, onLogout }) => {
+  const insets = useSafeAreaInsets();
+  const headerPaddingTop = Platform.OS === 'android' ? Math.max(insets.top, 12) : 20;
+
+  return (
+    <View style={[styles.header, { paddingTop: headerPaddingTop }]}>
+      <View style={styles.accentLine} />
+      <View style={styles.content}>
+        <View style={styles.avatarCircle}>
+          <Ionicons name="person" size={20} color={COLORS.accent} />
+        </View>
+        <View style={styles.welcomeContainer}>
+          <Text style={styles.welcomeLabel}>Welcome</Text>
+          <Text style={styles.userEmail} numberOfLines={1} ellipsizeMode="tail">
+            {userEmail || ''}
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={onLogout}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.logoutButtonText}>Log Out</Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeLabel}>Welcome </Text>
-        <Text style={styles.userEmail} numberOfLines={1} ellipsizeMode="tail">
-          {userEmail || ''}
-        </Text>
-      </View>
-      <TouchableOpacity
-        style={styles.logoutButton}
-        onPress={onLogout}
-        activeOpacity={0.85}
-      >
-        <Text style={styles.logoutButtonText}>Log Out</Text>
-      </TouchableOpacity>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   header: {
@@ -48,8 +54,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 16,
-    paddingTop: 20,
+    paddingVertical: 14,
+    paddingBottom: 18,
   },
   avatarCircle: {
     width: 44,
@@ -76,23 +82,20 @@ const styles = StyleSheet.create({
   },
   userEmail: {
     color: COLORS.white,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     opacity: 0.95,
   },
   logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: COLORS.accent,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderRadius: 14,
   },
   logoutButtonText: {
     color: COLORS.darkBlue,
     fontSize: 14,
     fontWeight: '700',
-    marginLeft: 6,
   },
 });
 
