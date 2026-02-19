@@ -77,9 +77,13 @@ const LoginScreen = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => navigation.replace('SignUp')}>
-                        <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
-                    </TouchableOpacity>
+                        <View style={styles.lastLine}>
+                        <Text style={styles.whiteText}>Don't have an account?  </Text>
+                        <TouchableOpacity onPress={() => navigation.replace('SignUp')}>
+                        <Text style={styles.linkText}> Sign Up</Text>
+                        </TouchableOpacity>
+                        </View>
+                   
                 </View>
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
@@ -129,6 +133,16 @@ const styles = StyleSheet.create({
     },
     linkText: {
         color: COLORS.accent,
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    lastLine: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    whiteText: {
+        color: COLORS.white,
         textAlign: 'center',
         marginTop: 20,
     },

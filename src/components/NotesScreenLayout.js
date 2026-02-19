@@ -4,6 +4,7 @@ import NotesHeader from './NotesHeader';
 import AddNoteFAB from './AddNoteFAB';
 
 const NotesScreenLayout = ({ title, userEmail, onLogout, onAddNote, children }) => (
+  //children is the content of the screen
   <SafeAreaView style={styles.container}>
     <NotesHeader userEmail={userEmail} onLogout={onLogout} />
     <View style={styles.content}>

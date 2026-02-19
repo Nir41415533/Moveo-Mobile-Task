@@ -16,16 +16,26 @@ const SignUpScreen = ({navigation}) => {
 
     
     const handleSignUp=async()=>{
-        setError(''); // clear the error message
+        setError(''); 
         if (!email.trim() || !password.trim()) {
             setError('Please fill in all fields');
             return;
         }
+        if (password.length < 6) {
+            setError('Password must be at least 6 characters');
+            return;
+        }
+        if (email.trim().includes('@') === false || email.trim().includes('.') === false) {
+            setError('Please enter a valid email address');
+            return;
+        }
+        
         setLoading(true);
 
         try {
             await createUserWithEmailAndPassword(auth, email.trim(), password);
         } catch (err) {
+            //translate firebase errors to user friendly errors
             if (err.code === 'auth/email-already-in-use') setError('This email is already registered.');
             else if (err.code === 'auth/invalid-email') setError('Please enter a valid email address.');
             else if (err.code === 'auth/weak-password') setError('Password must be at least 6 characters.');
@@ -71,10 +81,12 @@ const SignUpScreen = ({navigation}) => {
                     <Text style={styles.buttonText}>Sign Up</Text>
                 )}
             </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.linkText}>Already have an account? Login</Text>
+                <View style={styles.lastLine}>
+              <Text style={styles.whiteText}>Already have an account?  </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.linkText}> Login</Text>
             </TouchableOpacity>
+            </View>
 
 
 
@@ -129,6 +141,16 @@ const styles = StyleSheet.create({
     color: COLORS.red,
     textAlign: 'center',
     marginBottom: 10,
+  },
+  lastLine: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  whiteText: {
+    color: COLORS.white,
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 
