@@ -52,6 +52,9 @@ const AppNavigator = () => {
 
     useEffect(() => {
         let cancelled = false;
+        // onAuthStateChanged is a firebase function that listens to the user's authentication state
+        // auth is the firebase auth instance
+        // authenticateduser is the user object if the user is logged in, otherwise it is null
         const unsubscribe = onAuthStateChanged(auth, (authenticatedUser) => {
             if (!cancelled) {
                 setUser(authenticatedUser);
@@ -82,8 +85,7 @@ const AppNavigator = () => {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             {user ? (
                 <>
-                    <Stack.Screen name="AppHome" component={MainTabs} />
-                    {/* NoteDetail חייב להיות ב-Stack כדי שנוכל לעבור אליו מכל טאב */}
+                    <Stack.Screen name="Back" component={MainTabs} />
                     <Stack.Screen
                         name="NoteDetail"
                         component={NoteDetailScreen}
@@ -94,7 +96,8 @@ const AppNavigator = () => {
                             headerTintColor: '#ffffff',
                         })}
                     />
-                </>
+                </> 
+                //else
             ) : (
                 <>
                     <Stack.Screen name="Login" component={LoginScreen} />
