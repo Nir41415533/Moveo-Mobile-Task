@@ -15,6 +15,12 @@ const firebaseConfig = {
   measurementId: extra.firebaseMeasurementId,
 };
 
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  throw new Error(
+    'Missing Firebase config.'
+  );
+}
+
 const app = initializeApp(firebaseConfig);
 
 
