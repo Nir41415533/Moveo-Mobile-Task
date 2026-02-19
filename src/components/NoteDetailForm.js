@@ -5,8 +5,10 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Image,
   StyleSheet,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants/colors';
 
 const NoteDetailForm = ({
@@ -16,6 +18,9 @@ const NoteDetailForm = ({
   onTitleChange,
   body,
   onBodyChange,
+  imageBase64,
+  onAddImage,
+  onRemoveImage,
   onSave,
   onDelete,
   loading,
@@ -49,6 +54,25 @@ const NoteDetailForm = ({
       placeholderTextColor={COLORS.lightBlue}
       multiline
     />
+
+    <Text style={styles.label}>Image</Text>
+    {imageBase64 ? (
+      <View style={styles.imagePreviewWrap}>
+        <Image
+          source={{ uri: `data:image/jpeg;base64,${imageBase64}` }}
+          style={styles.imagePreview}
+          resizeMode="cover"
+        />
+        <TouchableOpacity style={styles.removeImageBtn} onPress={onRemoveImage}>
+          <Ionicons name="close-circle" size={28} color={COLORS.red} />
+        </TouchableOpacity>
+      </View>
+    ) : (
+      <TouchableOpacity style={styles.addImageButton} onPress={onAddImage} disabled={loading}>
+        <Ionicons name="image-outline" size={24} color={COLORS.lightBlue} />
+        <Text style={styles.addImageText}>Add image (camera or gallery)</Text>
+      </TouchableOpacity>
+    )}
 
     <TouchableOpacity style={styles.saveButton} onPress={onSave} disabled={loading}>
       {loading ? (
@@ -116,6 +140,36 @@ const styles = StyleSheet.create({
     color: COLORS.red,
     fontSize: 16,
     fontWeight: '600',
+  },
+  addImageButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.mediumBlue,
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+  addImageText: {
+    color: COLORS.lightBlue,
+    fontSize: 15,
+    marginLeft: 8,
+  },
+  imagePreviewWrap: {
+    position: 'relative',
+    marginBottom: 8,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  imagePreview: {
+    width: '100%',
+    height: 200,
+    borderRadius: 12,
+  },
+  removeImageBtn: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
   },
 });
 

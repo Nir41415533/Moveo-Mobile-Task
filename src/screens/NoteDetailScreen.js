@@ -5,6 +5,7 @@ import { COLORS } from '../constants/colors';
 import { auth } from '../services/FireBaseConfig';
 import { getNoteById, addNote, updateNote, deleteNote, formatNoteDate } from '../services/notesService';
 import { getCurrentLocation } from '../services/locationService';
+import { pickImageFromCamera, pickImageFromGallery } from '../services/imageService';
 import NoteDetailForm from '../components/NoteDetailForm';
 
 const NoteDetailScreen = ({ route, navigation }) => {
@@ -14,6 +15,7 @@ const NoteDetailScreen = ({ route, navigation }) => {
   const [noteDate, setNoteDate] = useState(formatNoteDate(new Date()));
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [imageBase64, setImageBase64] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingNote, setLoadingNote] = useState(!isNew);
 
@@ -25,11 +27,20 @@ const NoteDetailScreen = ({ route, navigation }) => {
             setNoteDate(note.noteDate || formatNoteDate(new Date()));
             setTitle(note.title || '');
             setBody(note.body || '');
+            setImageBase64(note.imageBase64 ?? null);
           }
         })
         .finally(() => setLoadingNote(false));
     }
   }, [noteId, isNew]);
+
+  const handleAddImage = () => {
+    Alert.alert('Add image', 'Choose source', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Camera', onPress: async () => { const b64 = await pickImageFromCamera(); if (b64) setImageBase64(b64); } },
+      { text: 'Gallery', onPress: async () => { const b64 = await pickImageFromGallery(); if (b64) setImageBase64(b64); } },
+    ]);
+  };
 
   const handleSave = async () => {
     const userId = auth.currentUser?.uid;
@@ -48,6 +59,7 @@ const NoteDetailScreen = ({ route, navigation }) => {
           noteDate,
           latitude,
           longitude,
+          imageBase64,
         });
       } else {
         await updateNote(noteId, {
@@ -56,6 +68,7 @@ const NoteDetailScreen = ({ route, navigation }) => {
           noteDate,
           latitude,
           longitude,
+          imageBase64,
         });
       }
       navigation.goBack();
@@ -104,6 +117,9 @@ const NoteDetailScreen = ({ route, navigation }) => {
       onTitleChange={setTitle}
       body={body}
       onBodyChange={setBody}
+      imageBase64={imageBase64}
+      onAddImage={handleAddImage}
+      onRemoveImage={() => setImageBase64(null)}
       onSave={handleSave}
       onDelete={handleDelete}
       loading={loading}

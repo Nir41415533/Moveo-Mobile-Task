@@ -61,7 +61,7 @@ export const getNoteById = async (noteId) => {
 };
 
 //create a note
-export const addNote = async ({ userId, title, body, noteDate, latitude, longitude }) => {
+export const addNote = async ({ userId, title, body, noteDate, latitude, longitude, imageBase64 }) => {
   const data = {
     userId,
     title: title || '',
@@ -70,18 +70,20 @@ export const addNote = async ({ userId, title, body, noteDate, latitude, longitu
     createdAt: serverTimestamp(),
     latitude: latitude ?? null,
     longitude: longitude ?? null,
+    imageBase64: imageBase64 ?? null,
   };
   const ref = await addDoc(collection(db, NOTES_COLLECTION), data);
   return { id: ref.id, ...data };
 };
 
 //update a note
-export const updateNote = async (noteId, { title, body, noteDate, latitude, longitude }) => {
+export const updateNote = async (noteId, { title, body, noteDate, latitude, longitude, imageBase64 }) => {
   const ref = doc(db, NOTES_COLLECTION, noteId);
   const data = { title: title ?? '', body: body ?? '' };
   if (noteDate != null) data.noteDate = noteDate;
   if (latitude != null) data.latitude = latitude;
   if (longitude != null) data.longitude = longitude;
+  if (imageBase64 !== undefined) data.imageBase64 = imageBase64;
   await updateDoc(ref, data);
 };
 
