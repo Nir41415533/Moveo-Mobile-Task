@@ -43,7 +43,7 @@ A React Native app for creating and viewing notes with location. Notes are store
 
 1. **Clone and install dependencies**
    ```bash
-   git clone <repo-url>
+   git clone https://github.com/Nir41415533/Moveo-Mobile-Task.git
    cd Mobile_Dev_Task
    npm install
    ```
