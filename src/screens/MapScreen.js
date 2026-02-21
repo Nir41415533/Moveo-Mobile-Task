@@ -47,7 +47,7 @@ const MapScreen = ({ navigation }) => {
   const openNote = (noteId) => {
     navigation.navigate('NoteDetail', { noteId });
   };
-
+  //filter the notes to only include notes with a location
   const notesWithLocation = notes.filter((n) => n.latitude != null && n.longitude != null);
   const initialRegion =
     notesWithLocation.length > 0
@@ -58,7 +58,6 @@ const MapScreen = ({ navigation }) => {
           longitudeDelta: 0.05,
         }
       : DEFAULT_REGION;
-
   const handleLogout = async () => {
     try {
       await signOut(auth);

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, Platform, Keyboard, ActivityIndicator } from 'react-native';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, Platform, Keyboard, ActivityIndicator} from 'react-native';
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../services/FireBaseConfig';
@@ -15,16 +15,25 @@ const LoginScreen = ({ navigation }) => {
     const handleLogin = async () => {
         setError(''); 
         
-        if (email.trim() === '' || password.trim() === '') {
+        if (email.trim() === '' || password.trim() === '' ) {
             setError('Please fill in all fields');
             return;
         }
 
         setLoading(true);
         try {
-            //login to firebase
+            /**
+                 Login process:
+                 -signInWithEmailAndPassword()
+                 -Firebase update auth
+                 -onAuthStateChanged call setUser(authenticatedUser)
+                 -AppNavigator do re render
+                 -user is exists -Stack show MainTabs 
+                 -MainTabs show the first tab = List
+             */
             await signInWithEmailAndPassword(auth, email.trim(), password);
         } catch (err) {
+
             //translate firebase errors to user friendly errors
             if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
                 setError('Invalid email or password.');

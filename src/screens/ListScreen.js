@@ -58,7 +58,7 @@ const ListScreen = ({ navigation }) => {
         data={notes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <NoteCard note={item} onPress={openNote} />}
-        contentContainerStyle={{ paddingBottom: 100 }} //add a 100px padding to the bottom
+        contentContainerStyle={{ paddingBottom: 100 }} //+100px padding bottom
         showsVerticalScrollIndicator={false}
       />
     );
