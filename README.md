@@ -89,6 +89,6 @@ Then:
 
 
 ## Common Issues:
--**Expo QR code doesn’t load:** Make sure your phone is on the same Wi-Fi as your computer.
--**Firestore write errors:** Check your Firestore security rules. In development, test mode is easiest.
--**Node version mismatch:** Use Node 18+ for best compatibility.
+- **Expo QR code doesn’t load:** Make sure your phone is on the same Wi-Fi as your computer.
+- **Firestore write errors:** Check your Firestore security rules. In development, test mode is easiest.
+- **Node version mismatch:** Use Node 18+ for best compatibility.
