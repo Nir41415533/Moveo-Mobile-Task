@@ -48,18 +48,15 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   noteTitle: {
-    color: COLORS.white,
+    color: COLORS.accent,
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 4,
-    color: COLORS.accent,
   },
   noteDate: {
-    flexDirection: 'row',
     color: COLORS.lightBlue,
     fontSize: 13,
     marginBottom: 6,
-  
   },
   notePreview: {
     color: COLORS.white,

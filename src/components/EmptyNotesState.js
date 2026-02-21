@@ -18,12 +18,11 @@ const styles = StyleSheet.create({
     minHeight: 160,
   },
   emptyHint: {
-    color: COLORS.white,
+    color: COLORS.accent,
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 8,
     textAlign: 'center',
-    color: COLORS.accent,
   },
   createHint: {
     color: COLORS.lightBlue,
