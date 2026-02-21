@@ -1,6 +1,6 @@
 # Mobile Development Task- Mooveo
 
-A React Native app for creating and viewing notes with location. Notes are stored in Firebase ;
+A React Native app for creating and viewing notes with location. Notes are stored in Firebase 
  authentication uses Firebase Auth with persistent login.
 
 ## Features
