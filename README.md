@@ -26,27 +26,35 @@ A React Native app for creating and viewing notes with location. Notes are store
 - **Location:** expo-location
 - **Env:** `dotenv` + `app.config.js` (Expo `extra`) 
 
-## Prerequisites
-- Node.js (LTS)
-- npm or yarn
-- Expo Go on your device, or Android Studio / Xcode for emulators
-- A Firebase project (Auth + Firestore enabled)
+## What you need to run this app
+
+**On your computer (one-time):**
+- **Node.js** (LTS) and **npm** (or yarn) — to install dependencies and run the app.
+- **Expo Go** on your phone (to run on a real device), **or** **Xcode** (Mac) / **Android Studio** (for iOS/Android simulators).
+
+**You do not install Firebase on your machine.** Firebase is included as an npm dependency in this project; `npm install` installs it along with everything else (Expo, React Navigation, react-native-maps, expo-location, etc.).
+
+**In the cloud (one-time per project):**
+- A **Firebase project** with Auth and Firestore enabled. You create it in [Firebase Console](https://console.firebase.google.com), get the config keys, and put them in a local `.env` file (see below). No Firebase CLI or global install is required.
+
+---
 
 ## Setup (after clone / pull)
 
-1. **Clone and install**
+1. **Clone and install dependencies**
    ```bash
    git clone <repo-url>
    cd Mobile_Dev_Task
    npm install
    ```
+   This installs all dependencies (including Firebase, Expo, react-native-maps, and the rest). Nothing else to install for the app itself.
 
 2. **Environment variables (required)**  
-   `.env` is not in the repo. Copy the example and add your own Firebase config:
+   `.env` is not in the repo. Copy the example and add your Firebase config:
    ```bash
    cp .env.example .env
    ```
-   Edit `.env` and set:
+   Edit `.env` and set these (from Firebase Console → Project settings → Your apps → config):
    - `EXPO_PUBLIC_FIREBASE_API_KEY`
    - `EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN`
    - `EXPO_PUBLIC_FIREBASE_PROJECT_ID`
@@ -55,17 +63,12 @@ A React Native app for creating and viewing notes with location. Notes are store
    - `EXPO_PUBLIC_FIREBASE_APP_ID`
    - `EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID`
 
-   Get these from the Firebase Console → Project settings → Your apps.
+3. **Firebase Console (for your Firebase project)**
+   - **Authentication** → Sign-in method → enable **Email/Password**.
+   - **Firestore Database** → Create database (e.g. start in test mode for development).
 
-3. **Firebase**
-   - Enable **Email/Password** sign-in in Authentication.
-   - Create a **Firestore** database (ive created it in test mode)
-
-4. **Maps (optional)**  
-   For the map screen, install the maps dependency :
-   ```bash
-   npx expo install react-native-maps
-   ```
+4. **Maps**  
+   `react-native-maps` is already in the project; `npm install` installs it. If you ever need to reinstall it: `npx expo install react-native-maps`.
 ## Run
 
 ```bash

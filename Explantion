@@ -1,0 +1,31 @@
+Mobile Assignment:
+
+I built the app using React Native with Expo to target both iOS and Android from a single codebase, which allowed for fast development and testing without managing native builds manually.
+
+For authentication, I used Firebase Authentication with Email/Password, as required. To ensure users remain logged in after closing the app, I initialized Firebase Auth with React Native persistence. Instead of the default in-memory session, I used initializeAuth together with getReactNativePersistence(AsyncStorage), so the authentication token is stored locally in AsyncStorage.
+
+The app’s navigator subscribes to onAuthStateChanged(auth, callback). When the app starts, Firebase restores the session from AsyncStorage if one exists and triggers the callback with the user object, which causes the navigator to display the main application screens. If there is no saved session, the callback receives null and the user is directed to the Login or SignUp screens.
+
+During login or signup, the app calls signInWithEmailAndPassword or createUserWithEmailAndPassword. Firebase then updates the authentication state and persists the new session to AsyncStorage, ensuring that the user remains logged in the next time the app is opened.
+
+Notes are stored in Firestore, which keeps the data in the cloud and allows future access from multiple devices. I chose not to use local storage solutions such as SQLite because the assignment required data to update on every change, and a remote database handles this requirement without the need to maintain a custom backend server.
+
+Notes are queried by the current user’s ID to ensure proper data isolation between users. Instead of sorting results directly in Firestore, I sort them by creation date within the app. This avoids the need to configure composite indexes and is sufficient given the relatively small number of notes per user.
+
+Location data is attached when the user taps Save. At that moment, the app requests the current GPS position so the note reflects the location where it was saved. I implemented a timeout mechanism to prevent the app from hanging if GPS acquisition is slow or if location permission is denied.
+
+In cases where the location cannot be retrieved, the note is still saved without coordinates. Notes that do not contain location data simply do not appear as markers on the map, and the map screen displays a short message when no notes with valid coordinates are available.
+
+For the image bonus feature, I chose to store images as Base64 encoded strings directly within the Firestore document instead of using Firebase Storage. This was a pragmatic decision that allowed the project to remain on the Firebase Spark (Free) plan without requiring an upgrade to the Blaze plan or adding a credit card for storage services.
+
+Although this method is not suitable for scalable production environments due to Firestore’s 1MB document size limit and higher storage costs, it was appropriate for the scope of this assignment. To mitigate size concerns, I implemented image compression before encoding the file to Base64 to ensure documents remain within reasonable limits.
+
+The user interface is structured using React Navigation. A stack navigator manages the authentication screens (Login and SignUp), while the main application uses a bottom tab navigator with two tabs: List and Map. The Note screen is pushed on top of the tab navigator so it can be opened from both the List and Map screens for viewing or editing.
+
+Firebase configuration values are loaded from environment variables using a .env file, which is excluded from the repository for security reasons. A .env.example file is included to document the required configuration keys so that anyone cloning the project can easily configure their own Firebase project.
+
+I used Gemini as a pair programming aid to improve code clarity, structure, location service, enhancing the README and .env.example, and fixing UI issues such as safeArea problem.
+
+I wrote and fully understood all the code.
+
+Overall, the application uses React Native with Expo for cross-platform development, Firebase Authentication for secure user management, and Firestore for cloud-based storage and persistence. Location is captured at save time with a timeout mechanism for reliability, images are stored directly within note documents for simplicity and atomicity, and the codebase is organized with a clear separation between screens, components, and services to keep the project maintainable, readable, and easy to explain.
