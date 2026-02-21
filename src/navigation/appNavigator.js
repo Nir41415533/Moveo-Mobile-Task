@@ -96,8 +96,7 @@ const AppNavigator = () => {
                             headerTintColor: '#ffffff',
                         })}
                     />
-                </> 
-                //else
+                </>
             ) : (
                 <>
                     <Stack.Screen name="Login" component={LoginScreen} />
